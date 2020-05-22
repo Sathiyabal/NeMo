@@ -1,6 +1,5 @@
-Tutorial
-========
-
+TRADE Tutorial
+==============
 
 Introduction
 ------------
@@ -264,3 +263,112 @@ References
     :style: plain
     :labelprefix: NLP-DST
     :keyprefix: nlp-dst-
+
+
+
+SGD Tutorial
+============
+
+
+Introduction
+------------
+
+One of the main building blocks of a task-oriented dialogue system that can book a table in a restaurant or order food for you is a Dialogue State Tracker (DST).
+DST should not only understand what the user just said but also remember what was said before.
+DST carries the information about what intent user has in the conversation, for example, find a restaurant or book a plane ticket,
+and what slots along with the corresponding values were mentions in the dialogue.
+This tutorial is based on code from `examples/nlp/dialogue_state_tracking/dialogue_state_tracking_sgd.py  <https://github.com/NVIDIA/NeMo/blob/master/examples/nlp/dialogue_state_tracking/dialogue_state_tracking_sgd.py>`_.
+
+
+The Schema-Guided Dialogue Dataset
+----------------------------------
+
+In this tutorial, we are using the Schema-Guided Dialogue (SGD) dataset :cite:`nlp-sgd-rastogi2019towards` that contains over 16k multi-domain goal-oriented conversations across 16 domains.
+The data represents conversations between a user and a virtual assistant and includes that can be used for various dialogue management tasks:
+intent prediction, slot filling, dialogue state tracking, policy imitation learning, language generation. 
+To find more details and download the dataset, use `this <https://github.com/google-research-datasets/dstc8-schema-guided-dialogue>`_.
+
+Baseline model
+--------------
+
+During training the baseline model introduced in :cite:`nlp-sgd-rastogi2019towards` is learning to understand/extract from the dialogue the following things:
+- active intent
+- 
+
+
+During training, all available schema information gets encoded in embedded representation: service descriptions, intents, slots and slot values for categorical slots, please see for more details.
+
+
+
+
+Training
+--------
+In order to train an instance of the TRADE model on the MultiWOZ dataset and evaluate on its dev and test data, run:
+
+.. code-block:: bash
+
+    cd examples/nlp/dialogue_state_tracking
+    python dialogue_state_tracking_sgd.py \
+        --data_dir PATH_TO/dstc8-schema-guided-dialogue \
+        --schema_embedding_dir PATH_TO/dstc8-schema-guided-dialogue/embeddings/ \
+        --dialogues_example_dir PATH_TO/dstc8-schema-guided-dialogue/dialogue_example_dir
+
+
+
+
+
+
+Metrics
+-------
+
+
+
+
+
+
+
+Results
+-------
+
+
+
++---------------------------------------------+----------------------------------------------------------+
+|                                             |       Dev                                                |
++                                             +-----------------+---------------+-----------+------------+
+| SGD baseline implementations                | Active Int Acc  | Req Slot F1   | Aver GA   | Joint GA   |
++=============================================+=================+===============+===========+============+
+| Original SGD-S                              | 
++---------------------------------------------+-----------------+---------------+-----------+-------------
+| NeMo's Implementation of the Baseline       | 
++---------------------------------------------+-----------------+---------------+-----------+-------------
+
+
+Checkpoints
+-----------
+
+You may find the checkpoints for the trained models on 
+
+Evaluating Checkpoints
+----------------------
+
+By default a folder named "checkpoints" would get created under the working folder specified by `--work_dir` and \
+checkpoints are stored under it. To do evaluation a checkpoint on test or dev set, \
+you may run the same script by passing `--checkpoint_dir` and setting `--num_epochs` as zero to avoid the training.
+
+.. code-block:: bash
+
+    cd examples/nlp/dialogue_state_tracking
+    python dialogue_state_tracking_sgd.py \
+        --data_dir PATH_TO/dstc8-schema-guided-dialogue \
+        --schema_embedding_dir PATH_TO/dstc8-schema-guided-dialogue/embeddings/ \
+        --dialogues_example_dir PATH_TO/dstc8-schema-guided-dialogue/dialogue_example_dir
+        --checkpoint_dir PAHT_TO_CHECKPOINTS_DIR
+        --num_epochs 0
+
+References
+----------
+
+.. bibliography:: nlp_all_refs.bib
+    :style: plain
+    :labelprefix: NLP-SGD
+    :keyprefix: nlp-sgd-
